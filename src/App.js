@@ -1,6 +1,7 @@
 import React from 'react';
+import axios from 'axios'
 
-const CakeTemplate = ({ handleClose, show, children }) => {
+const CakeTemplate = ({ handleClose, show, handleSubmit,handleInputChange, cakeList }) => {
   const showHideClassName = show ? "modal display-block" : "modal display-none";
 
   return (
@@ -8,11 +9,13 @@ const CakeTemplate = ({ handleClose, show, children }) => {
       <section className="modal-main">
         <div className="closeButton" onClick={handleClose}>X</div>
         <h2>Please add your cake here!</h2>
-        <label htmlFor="name">Name:</label> <input className="formControl"  type="text" maxLength="100" id="name" />
-        <label htmlFor="image">Image Url:</label><input className="formControl"  type="text" maxLength="300" id="image"  />
-        <label htmlFor="desc">Description:</label> <input className="formControl" type="text" maxLength="100" id="desc" />
+        <form>
+        <label htmlFor="name">Name:</label> <input className="formControl" name="cakeName"  type="text" maxLength="100" id="name" onChange={handleInputChange} />
+        <label htmlFor="image">Image Url:</label><input className="formControl" name="cakeImg"  type="text" maxLength="300" id="image" onChange={handleInputChange} />
+        <label htmlFor="desc">Description:</label> <input className="formControl" name="cakeDesc" type="text" maxLength="100" id="desc" onChange={handleInputChange} />
         <br />
-        <button type="buttonClass">Submit</button>
+        <button type="buttonClass" onClick={handleSubmit}>Submit</button>
+        </form>
       </section>
     </div>
   );
@@ -65,9 +68,32 @@ class App extends React.Component{
   }
 
   loadCakes(){
-    fetch('/cakes/cakeEntities')
-    .then(response => response.json())
-    .then(data => this.setState({cakeList:data._embedded.cakeEntities, loaded:true}));
+    axios.get('/cakes/').then((repos) => {
+      this.setState({ loaded: true, cakeList: repos.data });
+    });
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({
+      [name]: value    });
+  }
+
+  addCake(event){
+    this.toggleAddPage();
+    let data = JSON.stringify({
+      name: this.state.cakeName,
+      image: this.state.cakeImg,
+      description:this.state.cakeDesc
+    });
+
+    axios.post('/cakes/',data,{
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }).then((response) => this.loadCakes());
   }
 
   toggleAddPage(){
@@ -79,7 +105,12 @@ class App extends React.Component{
     <div className="App">
         <CakeHeader onClick={this.toggleAddPage.bind(this)}/>
         {this.state.loaded && <CakeList cakeList={this.state.cakeList}/>}
-        <CakeTemplate show={this.state.showAddPage} handleClose={this.toggleAddPage.bind(this)}/>
+        <CakeTemplate show={this.state.showAddPage} 
+                      handleClose={this.toggleAddPage.bind(this)} 
+                      handleSubmit={this.addCake.bind(this)} 
+                      handleInputChange={this.handleInputChange.bind(this)}
+                      cakeList={this.state.cakeList}
+                      />
     </div>
   );}
 }
