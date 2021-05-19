@@ -1,25 +1,17 @@
 import React from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import CakeForm from './cakeForm.js'
 
-const CakeTemplate = ({ handleClose, show, handleSubmit,handleInputChange, cakeList }) => {
-  const showHideClassName = show ? "modal display-block" : "modal display-none";
-
-  return (
-    <div className={showHideClassName}>
-      <section className="modal-main">
-        <div className="closeButton" onClick={handleClose}>X</div>
-        <h2>Please add your cake here!</h2>
-        <form>
-        <label htmlFor="name">Name:</label> <input className="formControl" name="cakeName"  type="text" maxLength="100" id="name" onChange={handleInputChange} />
-        <label htmlFor="image">Image Url:</label><input className="formControl" name="cakeImg"  type="text" maxLength="300" id="image" onChange={handleInputChange} />
-        <label htmlFor="desc">Description:</label> <input className="formControl" name="cakeDesc" type="text" maxLength="100" id="desc" onChange={handleInputChange} />
-        <br />
-        <button type="buttonClass" onClick={handleSubmit}>Submit</button>
-        </form>
-      </section>
-    </div>
-  );
-};
+function ErrorMsg(props) {
+  return(
+      <div className="errorMsg">
+      <div className="closeButton" onClick={props.closeError}>X</div>
+        <h3>Something went wrong :(</h3>
+        <p>{props.error.message} </p>
+        <p>Cake has not been added</p>
+      </div>
+  )
+}
 
 function CakeCard(props) {
   return(<div className="cakeCard">
@@ -48,17 +40,24 @@ function CakeHeader(props) {
       <div className="subMenu">
         <button className="buttonClass" onClick={props.onClick}> Add Cake </button>
       </div>
-      </div>
-      )
+    </div>
+  )
 }
 
 class App extends React.Component{
   constructor(props) {
     super(props);
+    this.child = React.createRef();
     this.state = {
       cakeList: [],
       loaded:false,
       showAddPage:false,
+      cakeName:"",
+      cakeImg:"",
+      cakeDesc:"",
+      showError:false,
+      reactError:false,
+      errorData:[],
     }
   }
 
@@ -78,39 +77,64 @@ class App extends React.Component{
     const value = target.value;
     const name = target.name;
     this.setState({
-      [name]: value    });
+      [name]: value});
   }
 
-  addCake(event){
-    this.toggleAddPage();
-    let data = JSON.stringify({
-      name: this.state.cakeName,
-      image: this.state.cakeImg,
-      description:this.state.cakeDesc
-    });
-
-    axios.post('/cakes/',data,{
-      headers: {
-          'Content-Type': 'application/json'
+  validEntries(){
+      if(this.state.cakeName!=="" && this.state.cakeImg!=="" && this.state.cakeDesc!==""){
+        return true;
       }
-  }).then((response) => this.loadCakes());
+      return false;
   }
 
+  addCake(){
+    if(this.validEntries()){
+     
+     this.setState({showError:false});
+     this.toggleAddPage();
+
+     let data = JSON.stringify({
+       name: this.state.cakeName,
+       image: this.state.cakeImg,
+       description:this.state.cakeDesc
+     });
+
+     axios.post('/cakes/',data,{
+       headers: {
+           'Content-Type': 'application/json'
+       }
+     }).then((response) => this.loadCakes())
+    .catch((error) => {
+      this.setState({errorData:error, reactError:true})
+      console.log(error)
+    });
+      this.setState({cakeName:"", cakeImg:"", cakeDesc:""});
+    }
+    this.setState({showError:true});
+  }
+
+  closeError(){
+    this.setState({errorData:[], reactError:false})
+  }
   toggleAddPage(){
-    this.setState({showAddPage: !this.state.showAddPage});
+    this.setState({showAddPage: !this.state.showAddPage, showError:false});
   }
 
   render(){
     return (
     <div className="App">
         <CakeHeader onClick={this.toggleAddPage.bind(this)}/>
+        {this.state.reactError && <ErrorMsg error={this.state.errorData} closeError={this.closeError.bind(this)}/>}
         {this.state.loaded && <CakeList cakeList={this.state.cakeList}/>}
-        <CakeTemplate show={this.state.showAddPage} 
+        <CakeForm show={this.state.showAddPage} 
                       handleClose={this.toggleAddPage.bind(this)} 
                       handleSubmit={this.addCake.bind(this)} 
                       handleInputChange={this.handleInputChange.bind(this)}
-                      cakeList={this.state.cakeList}
-                      />
+                      cakeName={this.state.cakeName}
+                      cakeImg={this.state.cakeImg}
+                      cakeDesc={this.state.cakeDesc}
+                      showError={this.state.showError}
+                       />
     </div>
   );}
 }
