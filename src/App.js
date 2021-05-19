@@ -66,7 +66,7 @@ class App extends React.Component{
 
   loadCakes(){
       axios.get('/cakes/').then((repos) => {
-        this.setState({ loaded: true, cakeList: repos.data });
+        this.setState({ loaded: true, cakeList: repos.data._embedded.cakes});
       }).catch(error =>{
       this.setState({errorData:error, reactError:true})
       console.log(error)})
