@@ -7,8 +7,7 @@ function ErrorMsg(props) {
       <div className="errorMsg">
       <div className="closeButton" onClick={props.closeError}>X</div>
         <h3>Something went wrong :(</h3>
-        <p>{props.error.message} </p>
-        <p>Cake has not been added</p>
+        <p>{props.error.message}</p>
       </div>
   )
 }
@@ -16,7 +15,7 @@ function ErrorMsg(props) {
 function CakeCard(props) {
   return(<div className="cakeCard">
             <h3>{props.item.name}</h3>
-        <img src={props.item.image} alt={props.item.name} />
+        <img src={props.item.image} alt={props.item.name} onerror="this.style.display='none'" />
         <p>{props.item.description}</p>
   </div>)
 }
@@ -63,13 +62,14 @@ class App extends React.Component{
 
   componentDidMount() {
     this.loadCakes();
-    return;
   }
 
   loadCakes(){
-    axios.get('/cakes/').then((repos) => {
-      this.setState({ loaded: true, cakeList: repos.data });
-    });
+      axios.get('/cakes/').then((repos) => {
+        this.setState({ loaded: true, cakeList: repos.data });
+      }).catch(error =>{
+      this.setState({errorData:error, reactError:true})
+      console.log(error)})
   }
 
   handleInputChange(event) {
@@ -81,9 +81,8 @@ class App extends React.Component{
   }
 
   validEntries(){
-      if(this.state.cakeName!=="" && this.state.cakeImg!=="" && this.state.cakeDesc!==""){
-        return true;
-      }
+      if(this.state.cakeName!=="" && this.state.cakeImg!=="" && this.state.cakeDesc!=="")
+         return true;
       return false;
   }
 

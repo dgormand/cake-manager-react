@@ -1,10 +1,12 @@
 body {
-  background-color: #f2f4f3;
+  background-color: rgb(244,239,231);
   font-family: Arial, Helvetica, sans-serif;
+  color: rgb(106,83,66);
+  margin-top: 0px;
 }
 
 .subMenu{
-  background-color: #06aed5;
+  background-color: rgb(233,145,131);
   height: 5vh;
   width: 95%;
   margin: auto;
@@ -46,23 +48,26 @@ body {
     cursor: pointer;
 }
 .cakeHeader{
-  background-color: #086788;
+  background-color: rgb(254,251,251);
   box-shadow: 2px 5px 6px -6px #04030f;
   text-align: center;
   font-size: 25px;
-  padding-top: 10px;
+  padding-top: 0px;
+  margin-top: 0px;
   height: 8vh;
 }
 
 .cakeHeader h2{
-  margin: 15px 0px 0px;
+  margin: 0px;
   padding: 0px;
-  color: #fdfefd;
+  font-family: Brush Script MT, Brush Script Std, cursive;
+  font-size: 70px;
 }
 
 .cakeCard{
-  width:200px;
-  padding: 20px;
+  width:250px;
+  min-width:250px;
+  padding: 10px 20px;
   margin-left: 30px;
   margin-bottom: 25px;
   background-color: #fffbff;
@@ -70,9 +75,10 @@ body {
 }
 
 .cakeCard h3{
-  padding:0px 10px 10px;
+  padding:10px 10px 10px;
   text-transform:capitalize;
   text-align: center;
+  background-color: rgb(233,145,131);
   text-overflow: ellipsis;
    display: -webkit-box;
    -webkit-line-clamp: 1;
@@ -82,7 +88,10 @@ body {
 img{
   width: 200px;
   height: 200px;
+  padding: 20px;
+  border: 3px solid rgb(106,83,66);
   min-height: 200px;
+  min-width:200px;
 }
 
 .cakeList{
@@ -109,6 +118,14 @@ img{
   left:50%;
   padding: 10px 40px 40px;
   transform: translate(-50%,-50%);
+}
+
+.modalSub{
+  display: flex;
+}
+
+.modalPicture{
+  margin-right: 20px;
 }
 
 .display-block {
