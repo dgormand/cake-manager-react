@@ -2,12 +2,12 @@ You need npm installed on your environment to run this code
 
 #To start application:
 Go to checkout folder
-npm install
-npm start
+`npm install`
+`npm start`
 
 #To build application:
 Make changes to files
-npm run build
+`npm run build`
 
 Copy artifacts to required server.
 
