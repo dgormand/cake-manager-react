@@ -15,7 +15,9 @@ function ErrorMsg(props) {
 function CakeCard(props) {
   return(<div className="cakeCard">
             <h3>{props.item.name}</h3>
+            <div className="imgFrame">
         <img src={props.item.image} alt={props.item.name} onerror="this.style.display='none'" />
+        </div>
         <p>{props.item.description}</p>
   </div>)
 }
