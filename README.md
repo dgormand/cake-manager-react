@@ -1,3 +1,19 @@
+You need npm installed on your environment to run this code
+
+#To start application:
+Go to checkout folder
+npm install
+npm start
+
+#To build application:
+Make changes to files
+npm run build
+
+Copy artifacts to required server.
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
